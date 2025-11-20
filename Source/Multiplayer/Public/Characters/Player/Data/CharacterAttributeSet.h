@@ -30,8 +30,12 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
 	FGameplayAttributeData MaxMana;
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
+	FGameplayAttributeData Damage;
+	
 	// allow to modify the new value of the attribute before it's available to other systems
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
+	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& EffectData) override;
 	
 	//call when the server changes a value
 	UFUNCTION()
@@ -50,4 +54,5 @@ public:
 	ATTRIBUTE_ACCESSORS_BASIC(UCharacterAttributeSet, MaxHealth);
 	ATTRIBUTE_ACCESSORS_BASIC(UCharacterAttributeSet, Mana);
 	ATTRIBUTE_ACCESSORS_BASIC(UCharacterAttributeSet, MaxMana);
+	ATTRIBUTE_ACCESSORS_BASIC(UCharacterAttributeSet, Damage);
 };

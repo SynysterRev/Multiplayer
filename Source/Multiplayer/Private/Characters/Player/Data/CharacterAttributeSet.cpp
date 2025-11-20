@@ -3,6 +3,7 @@
 
 #include "Characters/Player/Data/CharacterAttributeSet.h"
 #include "Net/UnrealNetwork.h"
+#include "GameplayEffectExtension.h"
 
 UCharacterAttributeSet::UCharacterAttributeSet()
 {
@@ -25,12 +26,32 @@ void UCharacterAttributeSet::PreAttributeChange(const FGameplayAttribute& Attrib
 	Super::PreAttributeChange(Attribute, NewValue);
 }
 
+void UCharacterAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& EffectData)
+{
+	Super::PostGameplayEffectExecute(EffectData);
+	if (EffectData.EvaluatedData.Attribute == GetDamageAttribute())
+	{
+		// Convert into -Health and then clamp
+		const float DamageValue = GetDamage();
+		const float OldHealthValue = GetHealth();
+		const float MaxHealthValue = GetMaxHealth();
+		const float NewHealthValue = FMath::Clamp(OldHealthValue - DamageValue, 0.0f, MaxHealthValue);
+	 
+		if (OldHealthValue != NewHealthValue)
+		{
+			// Set the new health after clamping to min-max
+			SetHealth(NewHealthValue);
+		}
+	}
+	
+	SetDamage(0.0f);
+}
+
 void UCharacterAttributeSet::OnRep_Health(const FGameplayAttributeData& OldValue)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UCharacterAttributeSet, Health, OldValue);
 	const float OldHealth = OldValue.GetCurrentValue();
 	const float NewHealth = GetHealth();
-	UE_LOG(LogTemp, Warning, TEXT("PostChange: Attribute changed %.2f -> %.2f"), OldHealth, NewHealth);
 	OnHealthChanged.Broadcast(this, OldHealth, NewHealth);
 }
 
@@ -39,7 +60,6 @@ void UCharacterAttributeSet::OnRep_Mana(const FGameplayAttributeData& OldValue)
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UCharacterAttributeSet, Mana, OldValue);
 	const float OldMana = OldValue.GetCurrentValue();
 	const float NewMana = GetMana();
-	UE_LOG(LogTemp, Warning, TEXT("PostChange: Attribute changed %.2f -> %.2f"), OldMana, NewMana);
 	OnManaChanged.Broadcast(this, OldMana, NewMana);
 }
 
