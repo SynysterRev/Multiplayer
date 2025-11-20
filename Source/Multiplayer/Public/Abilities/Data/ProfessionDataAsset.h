@@ -4,9 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "Professions/Data/BaseGameplayAbility.h"
 #include "ProfessionDataAsset.generated.h"
 
+class UBaseGameplayAbility;
 /**
  * 
  */

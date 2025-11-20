@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Professions/Data/AbilityCostMMC.h"
+#include "Abilities/Data/AbilityCostMMC.h"
 
-#include "Professions/Data/BaseGameplayAbility.h"
+#include "Abilities/Data/BaseGameplayAbility.h"
 
 float UAbilityCostMMC::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
 {

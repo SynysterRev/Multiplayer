@@ -76,3 +76,5 @@ DerivedDataCache/*
 Multiplayer.sln.DotSettings.user
 
 .idea/
+
+.vsconfig

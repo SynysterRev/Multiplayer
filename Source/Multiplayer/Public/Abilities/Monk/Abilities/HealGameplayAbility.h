@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Professions/Data/BaseGameplayAbility.h"
+#include "Abilities/Data/BaseGameplayAbility.h"
 #include "HealGameplayAbility.generated.h"
 
 /**

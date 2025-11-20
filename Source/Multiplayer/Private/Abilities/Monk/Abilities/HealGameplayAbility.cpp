@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Professions/Monk/Abilities/HealGameplayAbility.h"
+#include "Abilities/Monk/Abilities/HealGameplayAbility.h"
 
 #include "AbilitySystemComponent.h"
 
