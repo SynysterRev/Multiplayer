@@ -21,7 +21,9 @@ public class Multiplayer : ModuleRules
 			"Slate",
             "GameplayAbilities", 
 			"GameplayTags", 
-			"GameplayTasks"
+			"GameplayTasks",
+			"NavigationSystem",
+			"Niagara"
         });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
