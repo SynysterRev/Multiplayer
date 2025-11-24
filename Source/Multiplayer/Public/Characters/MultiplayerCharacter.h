@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "AbilityCharacterBase.h"
 #include "Logging/LogMacros.h"
-#include "AbilitySystemInterface.h"
 #include "MultiplayerCharacter.generated.h"
 
+class UAbilityInfo;
 class UTargetingComponent;
 class USpringArmComponent;
 class UCameraComponent;
@@ -23,7 +23,7 @@ DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
  *  Implements a controllable orbiting camera
  */
 UCLASS(config=Game)
-class AMultiplayerCharacter : public ACharacter, public IAbilitySystemInterface
+class AMultiplayerCharacter : public AAbilityCharacterBase
 {
 	GENERATED_BODY()
 
@@ -37,12 +37,6 @@ class AMultiplayerCharacter : public ACharacter, public IAbilitySystemInterface
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UTargetingComponent> TargetingComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Abilities", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UCharacterAbilitySystemComponent> CharacterAbilitySystemComp;
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Attributes", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UCharacterAttributeSet> AttributesSet;
 	
 protected:
 
@@ -61,14 +55,11 @@ protected:
 	/** Mouse Look Input Action */
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* MouseLookAction;
-
+	
 public:
 
 	/** Constructor */
-	AMultiplayerCharacter();	
-	virtual void BeginPlay() override;
-	
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	AMultiplayerCharacter();
 
 protected:
 

@@ -17,14 +17,12 @@ void UDamageGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Ha
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
 		return;
 	}
-
 	// FGameplayEffectSpecHandle CostSpecHandle = MakeOutgoingGameplayEffectSpec(GE_CostClass);
 	// if (CostSpecHandle.IsValid())
 	// {
 	// 	FGameplayTag CostTag = FGameplayTag::RequestGameplayTag(FName(("Abilities.Cost.Mana")));
 	// 	CostSpecHandle.Data.Get()->SetByCallerTagMagnitudes.Add(CostTag, -15.0f);
 	// }
-
 	if (CommitAbility(Handle, ActorInfo, ActivationInfo))
 	{
 		const UGameplayEffect* GameplayEffect = Test->GetDefaultObject<UGameplayEffect>();

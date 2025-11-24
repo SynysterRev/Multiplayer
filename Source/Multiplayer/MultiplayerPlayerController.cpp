@@ -3,6 +3,7 @@
 
 #include "MultiplayerPlayerController.h"
 
+#include "AbilitySystemComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Engine/LocalPlayer.h"
@@ -11,9 +12,10 @@
 #include "Multiplayer.h"
 #include "NavigationSystem.h"
 #include "NiagaraSystem.h"
-#include "NiagaraFunctionLibrary.h"
+#include "AbilitySystemBlueprintLibrary.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Characters/MultiplayerCharacter.h"
+#include "Characters/Components/CharacterAbilitySystemComponent.h"
 #include "Characters/Components/TargetingComponent.h"
 #include "Navigation/PathFollowingComponent.h"
 #include "Net/UnrealNetwork.h"
@@ -35,9 +37,9 @@ AMultiplayerCharacter* AMultiplayerPlayerController::GetMultiplayerCharacter() c
 void AMultiplayerPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	MultiplayerCharacter = Cast<AMultiplayerCharacter>(GetPawn());
-	
+
 	// only spawn touch controls on local player controllers
 	if (SVirtualJoystick::ShouldDisplayTouchInterface() && IsLocalPlayerController())
 	{
@@ -56,13 +58,13 @@ void AMultiplayerPlayerController::BeginPlay()
 	}
 
 	bShowMouseCursor = true;
-	
+
 	if (IsLocalPlayerController())
 	{
 		if (RootGameUIPanelClass)
 		{
 			RootGameUIPanel = Cast<URootGameUIPanel>(CreateWidget(this, RootGameUIPanelClass));
-		
+
 			if (!RootGameUIPanel)
 			{
 				UE_LOG(LogMultiplayerPlayerController, Warning, TEXT("Failed to create RootGameUIPanel"));
@@ -105,6 +107,18 @@ void AMultiplayerPlayerController::SetupInputComponent()
 			{
 				EnhancedInput->BindAction(LeftClickAction, ETriggerEvent::Started, this,
 				                          &AMultiplayerPlayerController::OnClick);
+
+				EnhancedInput->BindAction(FirstAbilityAction, ETriggerEvent::Started, this,
+				                          &AMultiplayerPlayerController::TryActivateAbility, 0);
+				
+				EnhancedInput->BindAction(SecondAbilityAction, ETriggerEvent::Started, this,
+						  &AMultiplayerPlayerController::TryActivateAbility, 1);
+				
+				EnhancedInput->BindAction(ThirdAbilityAction, ETriggerEvent::Started, this,
+						  &AMultiplayerPlayerController::TryActivateAbility, 2);
+				
+				EnhancedInput->BindAction(FourthAbilityAction, ETriggerEvent::Started, this,
+						  &AMultiplayerPlayerController::TryActivateAbility, 3);
 			}
 		}
 	}
@@ -117,12 +131,12 @@ void AMultiplayerPlayerController::OnClick()
 	if (GetHitResultUnderCursor(ECC_Interactable, false, Hit))
 	{
 		UE_LOG(LogMultiplayer, Log, TEXT("'%s' Actor find"), *Hit.GetActor()->GetName());
-		
+
 		if (!MultiplayerCharacter)
 		{
 			return;
 		}
-		
+
 		if (UTargetingComponent* TargetingComponent = MultiplayerCharacter->GetTargetingComponent())
 		{
 			TargetingComponent->SetTarget(Hit.GetActor());
@@ -148,6 +162,15 @@ void AMultiplayerPlayerController::MoveToLocation(const FVector& TargetLocation)
 	{
 		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, NavLoc.Location);
 	}
+}
+
+void AMultiplayerPlayerController::TryActivateAbility(const FInputActionValue& Value, int32 SlotIndex)
+{
+	if (UCharacterAbilitySystemComponent* ASC = Cast<UCharacterAbilitySystemComponent>(MultiplayerCharacter->GetAbilitySystemComponent()))
+	{
+		ASC->ActivateAbility(SlotIndex);
+	}
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(MultiplayerCharacter, )
 }
 
 void AMultiplayerPlayerController::ServerMoveToLocation_Implementation(const FVector& TargetLocation)

@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "MultiplayerPlayerController.generated.h"
 
+struct FGameplayAbilitySpecHandle;
 class URootGameUIPanel;
 class AMultiplayerCharacter;
 class UPathFollowingComponent;
@@ -19,6 +20,8 @@ class UNiagaraSystem;
 #define ECC_Ground ECC_GameTraceChannel3
 
 DECLARE_LOG_CATEGORY_EXTERN(LogMultiplayerPlayerController, Log, All);
+
+DECLARE_DELEGATE_OneParam(FInputAbilityDelegate, const int32);
 
 UCLASS(abstract)
 class AMultiplayerPlayerController : public APlayerController
@@ -46,10 +49,22 @@ protected:
 	TObjectPtr<UUserWidget> MobileControlsWidget;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
-	UNiagaraSystem* FXCursor;
+	TObjectPtr<UNiagaraSystem> FXCursor;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
-	UInputAction* LeftClickAction;
+	TObjectPtr<UInputAction> LeftClickAction;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	TObjectPtr<UInputAction> FirstAbilityAction;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	TObjectPtr<UInputAction> SecondAbilityAction;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	TObjectPtr<UInputAction> ThirdAbilityAction;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	TObjectPtr<UInputAction> FourthAbilityAction;
 	
 	UPROPERTY(Transient)
 	TObjectPtr<AMultiplayerCharacter> MultiplayerCharacter;
@@ -73,6 +88,9 @@ protected:
 	void ServerMoveToLocation(const FVector& TargetLocation);
 	
 	void MoveToLocation(const FVector& TargetLocation);
+	
+	UFUNCTION()
+	void TryActivateAbility(const FInputActionValue& Value, int32 SlotIndex);
 	
 public:
 	AMultiplayerPlayerController();

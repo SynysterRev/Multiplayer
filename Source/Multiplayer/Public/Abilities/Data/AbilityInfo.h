@@ -5,10 +5,12 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "Engine/DataAsset.h"
-#include "AbilityInfoDataAsset.generated.h"
+#include "AbilityInfo.generated.h"
+
+class UGameplayAbility;
 
 UCLASS(BlueprintType)
-class MULTIPLAYER_API UAbilityInfoDataAsset : public UDataAsset
+class MULTIPLAYER_API UAbilityInfo : public UDataAsset
 {
 	GENERATED_BODY()
 public:
@@ -29,4 +31,7 @@ public:
     
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float ManaCost;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UGameplayAbility> AbilityClass;
 };
