@@ -8,6 +8,7 @@
 #include "AbilitySystemInterface.h"
 #include "MultiplayerCharacter.generated.h"
 
+class UTargetingComponent;
 class USpringArmComponent;
 class UCameraComponent;
 class UInputAction;
@@ -34,6 +35,15 @@ class AMultiplayerCharacter : public ACharacter, public IAbilitySystemInterface
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UTargetingComponent> TargetingComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Abilities", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UCharacterAbilitySystemComponent> CharacterAbilitySystemComp;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Attributes", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UCharacterAttributeSet> AttributesSet;
+	
 protected:
 
 	/** Jump Input Action */
@@ -52,17 +62,13 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* MouseLookAction;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Abilities)
-	TObjectPtr<UCharacterAbilitySystemComponent> CharacterAbilitySystemComp;
-	
-	UPROPERTY()
-	TObjectPtr<UCharacterAttributeSet> AttributesSet;
-
 public:
 
 	/** Constructor */
 	AMultiplayerCharacter();	
-	virtual void BeginPlay();
+	virtual void BeginPlay() override;
+	
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 protected:
 
@@ -99,6 +105,6 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 	
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	FORCEINLINE UTargetingComponent* GetTargetingComponent() const { return TargetingComponent; }
 };
 

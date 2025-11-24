@@ -12,6 +12,7 @@
 #include "InputActionValue.h"
 #include "Multiplayer.h"
 #include "Characters/Components/CharacterAbilitySystemComponent.h"
+#include "Characters/Components/TargetingComponent.h"
 #include "Characters/Player/Data/CharacterAttributeSet.h"
 
 AMultiplayerCharacter::AMultiplayerCharacter()
@@ -50,6 +51,8 @@ AMultiplayerCharacter::AMultiplayerCharacter()
 	
 	CharacterAbilitySystemComp = CreateDefaultSubobject<UCharacterAbilitySystemComponent>(TEXT("AbilitySystemComp"));
 	AttributesSet = CreateDefaultSubobject<UCharacterAttributeSet>(TEXT("AttributesSet"));
+	
+	TargetingComponent= CreateDefaultSubobject<UTargetingComponent>(TEXT("TargetingComponent"));
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)

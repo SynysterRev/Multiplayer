@@ -6,18 +6,20 @@
 #include "GameFramework/PlayerController.h"
 #include "MultiplayerPlayerController.generated.h"
 
+class URootGameUIPanel;
+class AMultiplayerCharacter;
 class UPathFollowingComponent;
 class UInputAction;
 class UInputMappingContext;
 class UUserWidget;
 class UNiagaraSystem;
 
-/**
- *  Basic PlayerController class for a third person game
- *  Manages input mappings
- */
+
 #define ECC_Interactable ECC_GameTraceChannel2
 #define ECC_Ground ECC_GameTraceChannel3
+
+DECLARE_LOG_CATEGORY_EXTERN(LogMultiplayerPlayerController, Log, All);
+
 UCLASS(abstract)
 class AMultiplayerPlayerController : public APlayerController
 {
@@ -48,7 +50,16 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* LeftClickAction;
-
+	
+	UPROPERTY(Transient)
+	TObjectPtr<AMultiplayerCharacter> MultiplayerCharacter;
+	
+	UPROPERTY(EditAnywhere, Category="UI")
+	TSubclassOf<URootGameUIPanel> RootGameUIPanelClass;
+	
+	UPROPERTY(Transient, BlueprintReadOnly, Category="UI")
+	TObjectPtr<URootGameUIPanel> RootGameUIPanel;
+	
 	/** Gameplay initialization */
 	virtual void BeginPlay() override;
 
@@ -65,4 +76,6 @@ protected:
 	
 public:
 	AMultiplayerPlayerController();
+	
+	AMultiplayerCharacter* GetMultiplayerCharacter() const;
 };

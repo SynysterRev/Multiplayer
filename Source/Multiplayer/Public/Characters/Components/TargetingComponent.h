@@ -31,6 +31,7 @@ protected:
 	float MaxDistanceTargeting = 4000.0f;
 	
 	AActor* FindClosestTarget();
+	void TryTargetActor(AActor* Target);
 
 public:	
 	// Called every frame
@@ -38,9 +39,10 @@ public:
 	
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
-	void TryTargetActor(AActor* Target);
-	
+	/*Set the target for the local player*/
 	void SetTarget(AActor* Target);
+	
+	/*Mark the target and replicate the target, so allies can target the same actor*/
 	void MarkTarget();
 	
 	UFUNCTION(Server, Reliable)

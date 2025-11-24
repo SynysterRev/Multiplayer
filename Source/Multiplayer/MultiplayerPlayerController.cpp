@@ -13,19 +13,31 @@
 #include "NiagaraSystem.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "Characters/MultiplayerCharacter.h"
+#include "Characters/Components/TargetingComponent.h"
 #include "Navigation/PathFollowingComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "UI/RootGameUIPanel.h"
 #include "Widgets/Input/SVirtualJoystick.h"
+
+DEFINE_LOG_CATEGORY(LogMultiplayerPlayerController);
 
 AMultiplayerPlayerController::AMultiplayerPlayerController()
 {
 	PathFollowingComponent = CreateDefaultSubobject<UPathFollowingComponent>(TEXT("PathFollowingComponent"));
 }
 
+AMultiplayerCharacter* AMultiplayerPlayerController::GetMultiplayerCharacter() const
+{
+	return MultiplayerCharacter;
+}
+
 void AMultiplayerPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
+	MultiplayerCharacter = Cast<AMultiplayerCharacter>(GetPawn());
+	
 	// only spawn touch controls on local player controllers
 	if (SVirtualJoystick::ShouldDisplayTouchInterface() && IsLocalPlayerController())
 	{
@@ -44,6 +56,25 @@ void AMultiplayerPlayerController::BeginPlay()
 	}
 
 	bShowMouseCursor = true;
+	
+	if (IsLocalPlayerController())
+	{
+		if (RootGameUIPanelClass)
+		{
+			RootGameUIPanel = Cast<URootGameUIPanel>(CreateWidget(this, RootGameUIPanelClass));
+		
+			if (!RootGameUIPanel)
+			{
+				UE_LOG(LogMultiplayerPlayerController, Warning, TEXT("Failed to create RootGameUIPanel"));
+				return;
+			}
+			RootGameUIPanel->AddToViewport();
+		}
+		else
+		{
+			UE_LOG(LogMultiplayerPlayerController, Warning, TEXT("No root UI class set in the controller"));
+		}
+	}
 }
 
 void AMultiplayerPlayerController::SetupInputComponent()
@@ -86,16 +117,25 @@ void AMultiplayerPlayerController::OnClick()
 	if (GetHitResultUnderCursor(ECC_Interactable, false, Hit))
 	{
 		UE_LOG(LogMultiplayer, Log, TEXT("'%s' Actor find"), *Hit.GetActor()->GetName());
-		return;
-	}
-	if (GetHitResultUnderCursor(ECC_Ground, false, Hit))
-	{
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, Hit.ImpactPoint, FRotator::ZeroRotator,
-		                                               FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
-		// UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, Hit.ImpactPoint);
-		ServerMoveToLocation(Hit.ImpactPoint);
 		
+		if (!MultiplayerCharacter)
+		{
+			return;
+		}
+		
+		if (UTargetingComponent* TargetingComponent = MultiplayerCharacter->GetTargetingComponent())
+		{
+			TargetingComponent->SetTarget(Hit.GetActor());
+		}
 	}
+	// if (GetHitResultUnderCursor(ECC_Ground, false, Hit))
+	// {
+	// 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, Hit.ImpactPoint, FRotator::ZeroRotator,
+	// 	                                               FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
+	// 	// UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, Hit.ImpactPoint);
+	// 	ServerMoveToLocation(Hit.ImpactPoint);
+	// 	
+	// }
 }
 
 void AMultiplayerPlayerController::MoveToLocation(const FVector& TargetLocation)

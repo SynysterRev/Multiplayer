@@ -59,7 +59,8 @@ void UTargetingComponent::TryTargetActor(AActor* Target)
 
 void UTargetingComponent::SetTarget(AActor* Target)
 {
-	if (CurrentTarget == Target) return;
+	if (CurrentTarget == Target) 
+		return;
 	CurrentTarget = Target;
 	OnTargetChanged.Broadcast(CurrentTarget);
 }

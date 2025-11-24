@@ -15,6 +15,7 @@ public class Multiplayer : ModuleRules
 			"InputCore",
 			"EnhancedInput",
 			"AIModule",
+			"CommonUI",
 			"StateTreeModule",
 			"GameplayStateTreeModule",
 			"UMG",
