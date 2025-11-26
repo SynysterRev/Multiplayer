@@ -7,6 +7,7 @@
 #include "Abilities/Data/AbilityInfo.h"
 #include "Characters/MultiplayerCharacter.h"
 #include "Characters/Components/TargetingComponent.h"
+#include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 
 DEFINE_LOG_CATEGORY(LogGameplayAbility);
 
@@ -16,6 +17,31 @@ void UBaseGameplayAbility::ExecuteAbilityLogic(const FGameplayAbilitySpecHandle 
                                                const FGameplayEventData* TriggerEventData,
                                                const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
+}
+
+void UBaseGameplayAbility::OnCompleted()
+{
+	if (!HasAuthority(&CurrentActivationInfo))
+	{
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+		return;
+	}
+	ExecuteAbilityLogic(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, &CurrentEventData,
+	                    CachedTargetData);
+}
+
+void UBaseGameplayAbility::OnCancelled()
+{
+	UE_LOG(LogTemp, Warning, TEXT("[%s] OnCancelled called - HasAuthority: %s"),
+	       *CurrentActorInfo->AvatarActor->GetName(),
+	       HasAuthority(&CurrentActivationInfo) ? TEXT("YES") : TEXT("NO"));
+}
+
+void UBaseGameplayAbility::OnInterrupted()
+{
+	UE_LOG(LogTemp, Warning, TEXT("[%s] OnInterrupted called - HasAuthority: %s"),
+	       *CurrentActorInfo->AvatarActor->GetName(),
+	       HasAuthority(&CurrentActivationInfo) ? TEXT("YES") : TEXT("NO"));
 }
 
 const FGameplayTagContainer* UBaseGameplayAbility::GetCooldownTags() const
@@ -40,6 +66,7 @@ void UBaseGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle Handle
 		UE_LOG(LogGameplayAbility, Error, TEXT("No ability info specified for ability '%s'"), *GetName());
 		return;
 	}
+
 	if (UGameplayEffect* CooldownGE = GetCooldownGameplayEffect())
 	{
 		FGameplayEffectSpecHandle SpecHandle =
@@ -56,11 +83,6 @@ void UBaseGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Hand
                                            const FGameplayAbilityActivationInfo ActivationInfo,
                                            const FGameplayEventData* TriggerEventData)
 {
-	if (!HasAuthority(&ActivationInfo))
-	{
-		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
-		return;
-	}
 	AMultiplayerCharacter* AvatarActor = Cast<AMultiplayerCharacter>(ActorInfo->AvatarActor.Get());
 	UTargetingComponent* TargetingComp = AvatarActor
 		                                     ? AvatarActor->GetTargetingComponent()
@@ -71,7 +93,7 @@ void UBaseGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 		EndAbility(Handle, ActorInfo, ActivationInfo, false, true);
 		return;
 	}
-	
+
 	if (TargetingComp)
 	{
 		AActor* TargetActor = TargetingComp->GetCurrentTarget()
@@ -82,20 +104,30 @@ void UBaseGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 
 		if (!TargetActor)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("No targeted actor"));
 			EndAbility(Handle, ActorInfo, ActivationInfo, false, true);
 			return;
 		}
-		
+
 		float MaxDistanceSquared = AbilityInfo->MaxCastDistance * AbilityInfo->MaxCastDistance;
 		if (FVector::DistSquared(TargetActor->GetActorLocation(), AvatarActor->GetActorLocation()) > MaxDistanceSquared)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("Too far away"));
 			EndAbility(Handle, ActorInfo, ActivationInfo, false, true);
 			return;
 		}
 		const FGameplayAbilityTargetDataHandle TargetDataHandle =
 			UAbilitySystemBlueprintLibrary::AbilityTargetDataFromActor(TargetActor);
+
+		CachedTargetData = TargetDataHandle;
 		
-		ExecuteAbilityLogic(Handle, ActorInfo, ActivationInfo, TriggerEventData, TargetDataHandle);
+		UAbilityTask_PlayMontageAndWait* Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
+			this, TEXT("CastAnim"), CastAnim);
+		Task->OnCompleted.AddDynamic(this, &UBaseGameplayAbility::OnCompleted);
+		Task->OnInterrupted.AddDynamic(this, &UBaseGameplayAbility::OnInterrupted);
+		Task->OnCancelled.AddDynamic(this, &UBaseGameplayAbility::OnCancelled);
+
+		Task->ReadyForActivation();
 	}
 	else
 	{

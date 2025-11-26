@@ -17,6 +17,9 @@ class MULTIPLAYER_API UBaseGameplayAbility : public UGameplayAbility
 	GENERATED_BODY()
 	
 protected:
+	
+	UPROPERTY()
+	FGameplayAbilityTargetDataHandle CachedTargetData;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Cooldown")
 	FGameplayTagContainer CooldownTags;
@@ -29,11 +32,23 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="AbilityInfo")
 	TObjectPtr<UAbilityInfo> AbilityInfo;
 	
+	UPROPERTY(EditDefaultsOnly, Category="Animation")
+	TObjectPtr<UAnimMontage> CastAnim;
+	
 	virtual void ExecuteAbilityLogic(const FGameplayAbilitySpecHandle Handle,
 											 const FGameplayAbilityActorInfo* ActorInfo,
 											 const FGameplayAbilityActivationInfo ActivationInfo,
 											 const FGameplayEventData* TriggerEventData,
 											 const FGameplayAbilityTargetDataHandle& TargetDataHandle);
+	
+	UFUNCTION()
+	void OnCompleted();
+	
+	UFUNCTION()
+	void OnCancelled();
+	
+	UFUNCTION()
+	void OnInterrupted();
 public:
 	
 	virtual const FGameplayTagContainer* GetCooldownTags() const override;
