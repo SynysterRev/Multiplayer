@@ -11,11 +11,9 @@ void UDamageGameplayAbility::ExecuteAbilityLogic(const FGameplayAbilitySpecHandl
                                                  const FGameplayEventData* TriggerEventData,
                                                  const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
-	UE_LOG(LogGameplayAbility, Error, TEXT("nbvccvb"));
 	// Super::ExecuteAbilityLogic(TargetedActor);
 	if (CommitAbility(Handle, ActorInfo, ActivationInfo))
 	{
-	UE_LOG(LogGameplayAbility, Error, TEXT("p;olik"));
 		
 		ApplyGameplayEffectToTarget(Handle, ActorInfo, ActivationInfo, TargetDataHandle, Test, 1);
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);

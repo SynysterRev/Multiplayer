@@ -61,7 +61,6 @@ void UBaseGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
 		return;
 	}
-	UE_LOG(LogGameplayAbility, Error, TEXT("TESTS"));
 	AMultiplayerCharacter* AvatarActor = Cast<AMultiplayerCharacter>(ActorInfo->AvatarActor.Get());
 	UTargetingComponent* TargetingComp = AvatarActor
 		                                     ? AvatarActor->GetTargetingComponent()
@@ -75,7 +74,6 @@ void UBaseGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 	// 3. 🌟 Récupérer la cible directement depuis le Component
 	if (TargetingComp)
 	{
-		UE_LOG(LogGameplayAbility, Error, TEXT("qsdqsd"));
 		AActor* TargetActor = TargetingComp->GetCurrentTarget()
 			                      ? TargetingComp->GetCurrentTarget()
 			                      : AbilityInfo->bCanSelfTarget
@@ -87,7 +85,6 @@ void UBaseGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 			EndAbility(Handle, ActorInfo, ActivationInfo, false, true);
 			return;
 		}
-		UE_LOG(LogGameplayAbility, Error, TEXT("hbgfdhfgg"));
 		const FGameplayAbilityTargetDataHandle TargetDataHandle =
 			UAbilitySystemBlueprintLibrary::AbilityTargetDataFromActor(TargetActor);
 		// 4. Si la cible est valide, lancer la logique de l'Ability
