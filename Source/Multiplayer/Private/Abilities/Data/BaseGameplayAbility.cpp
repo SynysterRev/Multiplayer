@@ -71,7 +71,7 @@ void UBaseGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 		EndAbility(Handle, ActorInfo, ActivationInfo, false, true);
 		return;
 	}
-	// 3. 🌟 Récupérer la cible directement depuis le Component
+	
 	if (TargetingComp)
 	{
 		AActor* TargetActor = TargetingComp->GetCurrentTarget()
@@ -85,17 +85,20 @@ void UBaseGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 			EndAbility(Handle, ActorInfo, ActivationInfo, false, true);
 			return;
 		}
+		
+		float MaxDistanceSquared = AbilityInfo->MaxCastDistance * AbilityInfo->MaxCastDistance;
+		if (FVector::DistSquared(TargetActor->GetActorLocation(), AvatarActor->GetActorLocation()) > MaxDistanceSquared)
+		{
+			EndAbility(Handle, ActorInfo, ActivationInfo, false, true);
+			return;
+		}
 		const FGameplayAbilityTargetDataHandle TargetDataHandle =
 			UAbilitySystemBlueprintLibrary::AbilityTargetDataFromActor(TargetActor);
-		// 4. Si la cible est valide, lancer la logique de l'Ability
+		
 		ExecuteAbilityLogic(Handle, ActorInfo, ActivationInfo, TriggerEventData, TargetDataHandle);
-
-		// 5. Terminer l'Ability (avec succès)
-		// EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 	}
 	else
 	{
-		// Pas de cible trouvée (l'Ability n'est pas lancée)
 		EndAbility(Handle, ActorInfo, ActivationInfo, false, true);
 	}
 }

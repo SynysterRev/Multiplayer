@@ -34,6 +34,9 @@ public:
 	FScalableFloat ManaCost;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float MaxCastDistance;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	bool bCanSelfTarget;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)

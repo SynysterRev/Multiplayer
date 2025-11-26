@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilityInfo.h"
 #include "Abilities/GameplayAbility.h"
 #include "BaseGameplayAbility.generated.h"
 
@@ -16,9 +17,6 @@ class MULTIPLAYER_API UBaseGameplayAbility : public UGameplayAbility
 	GENERATED_BODY()
 	
 protected:
-	
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Cooldown")
-	FScalableFloat CooldownDuration;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Cooldown")
 	FGameplayTagContainer CooldownTags;
@@ -38,11 +36,9 @@ protected:
 											 const FGameplayAbilityTargetDataHandle& TargetDataHandle);
 public:
 	
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Cost")
-	FScalableFloat Cost;
-	
 	virtual const FGameplayTagContainer* GetCooldownTags() const override;
 	virtual void ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo * ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
+	FScalableFloat GetCost() const { return AbilityInfo ? AbilityInfo->ManaCost : 0.0f; };
 };

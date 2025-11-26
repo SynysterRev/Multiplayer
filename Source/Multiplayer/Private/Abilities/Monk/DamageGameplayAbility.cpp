@@ -15,7 +15,7 @@ void UDamageGameplayAbility::ExecuteAbilityLogic(const FGameplayAbilitySpecHandl
 	if (CommitAbility(Handle, ActorInfo, ActivationInfo))
 	{
 		
-		ApplyGameplayEffectToTarget(Handle, ActorInfo, ActivationInfo, TargetDataHandle, Test, 1);
+		ApplyGameplayEffectToTarget(Handle, ActorInfo, ActivationInfo, TargetDataHandle, DamageEffect, 1);
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 	}
 	else

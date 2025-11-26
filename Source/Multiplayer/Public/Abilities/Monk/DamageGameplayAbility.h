@@ -25,8 +25,5 @@ public:
 	
 	// virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<UGameplayEffect> Test;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cost")
-	TSubclassOf<UGameplayEffect> GE_CostClass;
+	TSubclassOf<UGameplayEffect> DamageEffect;
 };
