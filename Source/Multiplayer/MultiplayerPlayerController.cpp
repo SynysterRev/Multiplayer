@@ -170,7 +170,7 @@ void AMultiplayerPlayerController::TryActivateAbility(const FInputActionValue& V
 	{
 		ASC->ActivateAbility(SlotIndex);
 	}
-	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(MultiplayerCharacter, )
+	// UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(MultiplayerCharacter, )
 }
 
 void AMultiplayerPlayerController::ServerMoveToLocation_Implementation(const FVector& TargetLocation)

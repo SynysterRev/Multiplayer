@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "ScalableFloat.h"
 #include "Engine/DataAsset.h"
 #include "AbilityInfo.generated.h"
 
@@ -27,10 +28,13 @@ public:
 	FGameplayTag AbilityTag;
     
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float Cooldown;
+	FScalableFloat Cooldown;
     
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float ManaCost;
+	FScalableFloat ManaCost;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bCanSelfTarget;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<UGameplayAbility> AbilityClass;

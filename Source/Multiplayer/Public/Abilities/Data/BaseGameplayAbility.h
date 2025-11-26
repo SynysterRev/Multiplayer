@@ -6,9 +6,10 @@
 #include "Abilities/GameplayAbility.h"
 #include "BaseGameplayAbility.generated.h"
 
-/**
- * 
- */
+class UAbilityInfo;
+
+DECLARE_LOG_CATEGORY_EXTERN(LogGameplayAbility, Log, All);
+
 UCLASS()
 class MULTIPLAYER_API UBaseGameplayAbility : public UGameplayAbility
 {
@@ -27,7 +28,14 @@ protected:
 	UPROPERTY(Transient)
 	FGameplayTagContainer TempCooldownTags;
 	
+	UPROPERTY(EditDefaultsOnly, Category="AbilityInfo")
+	TObjectPtr<UAbilityInfo> AbilityInfo;
 	
+	virtual void ExecuteAbilityLogic(const FGameplayAbilitySpecHandle Handle,
+											 const FGameplayAbilityActorInfo* ActorInfo,
+											 const FGameplayAbilityActivationInfo ActivationInfo,
+											 const FGameplayEventData* TriggerEventData,
+											 const FGameplayAbilityTargetDataHandle& TargetDataHandle);
 public:
 	
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Cost")
@@ -35,5 +43,6 @@ public:
 	
 	virtual const FGameplayTagContainer* GetCooldownTags() const override;
 	virtual void ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo * ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
+	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
 };

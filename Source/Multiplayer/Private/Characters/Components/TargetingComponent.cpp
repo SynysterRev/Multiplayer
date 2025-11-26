@@ -63,6 +63,20 @@ void UTargetingComponent::SetTarget(AActor* Target)
 		return;
 	CurrentTarget = Target;
 	OnTargetChanged.Broadcast(CurrentTarget);
+	
+	if (GetOwner() && !GetOwner()->HasAuthority())
+	{
+		ServerSetTarget(CurrentTarget);
+	}
+}
+
+void UTargetingComponent::ServerSetTarget_Implementation(AActor* NewTarget)
+{
+	if (!IsValid(NewTarget) || !NewTarget->GetIsReplicated())
+	{
+		return;
+	}
+	SetTarget(NewTarget);
 }
 
 void UTargetingComponent::MarkTarget()
