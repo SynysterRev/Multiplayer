@@ -7,6 +7,9 @@
 #include "Abilities/GameplayAbility.h"
 #include "BaseGameplayAbility.generated.h"
 
+class AMultiplayerPlayerController;
+class AMultiplayerCharacter;
+class UTargetingComponent;
 class UAbilityInfo;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogGameplayAbility, Log, All);
@@ -49,6 +52,19 @@ protected:
 	
 	UFUNCTION()
 	void OnInterrupted();
+	
+	UFUNCTION(BlueprintCallable, Category="Ability")
+	UTargetingComponent* GetTargetingComponentFromActorInfo() const;
+	
+	UFUNCTION(BlueprintCallable, Category="Ability")
+	AMultiplayerCharacter* GetMultiplayerCharacterFromActorInfo() const;
+	
+	UFUNCTION(BlueprintCallable, Category="Ability")
+	AController* GetControllerFromActorInfo() const;
+	
+	UFUNCTION(BlueprintCallable, Category="Ability")
+	AMultiplayerPlayerController* GetMultiplayerControllerFromActorInfo() const;
+	
 public:
 	
 	virtual const FGameplayTagContainer* GetCooldownTags() const override;

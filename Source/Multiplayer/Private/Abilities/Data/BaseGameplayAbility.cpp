@@ -4,6 +4,7 @@
 #include "Abilities/Data/BaseGameplayAbility.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "MultiplayerPlayerController.h"
 #include "Abilities/Data/AbilityInfo.h"
 #include "Characters/MultiplayerCharacter.h"
 #include "Characters/Components/TargetingComponent.h"
@@ -42,6 +43,38 @@ void UBaseGameplayAbility::OnInterrupted()
 	UE_LOG(LogTemp, Warning, TEXT("[%s] OnInterrupted called - HasAuthority: %s"),
 	       *CurrentActorInfo->AvatarActor->GetName(),
 	       HasAuthority(&CurrentActivationInfo) ? TEXT("YES") : TEXT("NO"));
+}
+
+UTargetingComponent* UBaseGameplayAbility::GetTargetingComponentFromActorInfo() const
+{
+	AMultiplayerCharacter* Character = GetMultiplayerCharacterFromActorInfo();
+	return Character ? Character->GetTargetingComponent() : nullptr;
+}
+
+AMultiplayerCharacter* UBaseGameplayAbility::GetMultiplayerCharacterFromActorInfo() const
+{
+	return CurrentActorInfo ? Cast<AMultiplayerCharacter>(CurrentActorInfo->AvatarActor.Get()) : nullptr;
+}
+
+AController* UBaseGameplayAbility::GetControllerFromActorInfo() const
+{
+	if (CurrentActorInfo)
+	{
+		if (APlayerController* PC = CurrentActorInfo->PlayerController.Get())
+		{
+			return PC;
+		}
+		if (AMultiplayerCharacter* Character = GetMultiplayerCharacterFromActorInfo())
+		{
+			return Character->GetController();
+		}
+	}
+	return nullptr;
+}
+
+AMultiplayerPlayerController* UBaseGameplayAbility::GetMultiplayerControllerFromActorInfo() const
+{
+	return CurrentActorInfo ? Cast<AMultiplayerPlayerController>(CurrentActorInfo->PlayerController.Get()) : nullptr;
 }
 
 const FGameplayTagContainer* UBaseGameplayAbility::GetCooldownTags() const
@@ -83,10 +116,8 @@ void UBaseGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Hand
                                            const FGameplayAbilityActivationInfo ActivationInfo,
                                            const FGameplayEventData* TriggerEventData)
 {
-	AMultiplayerCharacter* AvatarActor = Cast<AMultiplayerCharacter>(ActorInfo->AvatarActor.Get());
-	UTargetingComponent* TargetingComp = AvatarActor
-		                                     ? AvatarActor->GetTargetingComponent()
-		                                     : nullptr;
+	AMultiplayerCharacter* AvatarActor = GetMultiplayerCharacterFromActorInfo();
+	UTargetingComponent* TargetingComp = GetTargetingComponentFromActorInfo();
 	if (!AbilityInfo)
 	{
 		UE_LOG(LogGameplayAbility, Error, TEXT("No ability info specified for ability '%s'"), *GetName());
@@ -96,6 +127,7 @@ void UBaseGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 
 	if (TargetingComp)
 	{
+		// will need improvement to check enemy/ally
 		AActor* TargetActor = TargetingComp->GetCurrentTarget()
 			                      ? TargetingComp->GetCurrentTarget()
 			                      : AbilityInfo->bCanSelfTarget
@@ -120,7 +152,7 @@ void UBaseGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 			UAbilitySystemBlueprintLibrary::AbilityTargetDataFromActor(TargetActor);
 
 		CachedTargetData = TargetDataHandle;
-		
+
 		UAbilityTask_PlayMontageAndWait* Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
 			this, TEXT("CastAnim"), CastAnim);
 		Task->OnCompleted.AddDynamic(this, &UBaseGameplayAbility::OnCompleted);
