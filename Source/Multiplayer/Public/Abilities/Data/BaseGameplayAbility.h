@@ -7,6 +7,7 @@
 #include "Abilities/GameplayAbility.h"
 #include "BaseGameplayAbility.generated.h"
 
+class UCharacterAbilitySystemComponent;
 class AMultiplayerPlayerController;
 class AMultiplayerCharacter;
 class UTargetingComponent;
@@ -64,6 +65,9 @@ protected:
 	
 	UFUNCTION(BlueprintCallable, Category="Ability")
 	AMultiplayerPlayerController* GetMultiplayerControllerFromActorInfo() const;
+	
+	UFUNCTION(BlueprintCallable, Category="Ability")
+	UCharacterAbilitySystemComponent* GetAbilitySystemFromActorInfo() const;
 	
 public:
 	

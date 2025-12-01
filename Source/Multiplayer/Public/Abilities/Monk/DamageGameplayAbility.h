@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "NiagaraSystem.h"
 #include "Abilities/Data/BaseGameplayAbility.h"
 #include "DamageGameplayAbility.generated.h"
 
+class UNiagaraSystem;
 /**
  * 
  */
@@ -26,4 +28,10 @@ public:
 	// virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UGameplayEffect> DamageEffect;
+	
+	UPROPERTY(EditAnywhere)
+	FGameplayTag GameplayCueTag;
+	
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UNiagaraSystem> FXTest;
 };

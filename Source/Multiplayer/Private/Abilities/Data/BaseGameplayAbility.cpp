@@ -9,6 +9,7 @@
 #include "Characters/MultiplayerCharacter.h"
 #include "Characters/Components/TargetingComponent.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
+#include "Characters/Components/CharacterAbilitySystemComponent.h"
 
 DEFINE_LOG_CATEGORY(LogGameplayAbility);
 
@@ -75,6 +76,13 @@ AController* UBaseGameplayAbility::GetControllerFromActorInfo() const
 AMultiplayerPlayerController* UBaseGameplayAbility::GetMultiplayerControllerFromActorInfo() const
 {
 	return CurrentActorInfo ? Cast<AMultiplayerPlayerController>(CurrentActorInfo->PlayerController.Get()) : nullptr;
+}
+
+UCharacterAbilitySystemComponent* UBaseGameplayAbility::GetAbilitySystemFromActorInfo() const
+{
+	return CurrentActorInfo
+		       ? Cast<UCharacterAbilitySystemComponent>(CurrentActorInfo->AbilitySystemComponent.Get())
+		       : nullptr;
 }
 
 const FGameplayTagContainer* UBaseGameplayAbility::GetCooldownTags() const

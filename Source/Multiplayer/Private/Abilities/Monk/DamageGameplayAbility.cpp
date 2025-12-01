@@ -4,6 +4,7 @@
 #include "Abilities/Monk/DamageGameplayAbility.h"
 
 #include "AbilitySystemComponent.h"
+#include "Characters/Components/CharacterAbilitySystemComponent.h"
 
 void UDamageGameplayAbility::ExecuteAbilityLogic(const FGameplayAbilitySpecHandle Handle,
                                                  const FGameplayAbilityActorInfo* ActorInfo,
@@ -14,13 +15,35 @@ void UDamageGameplayAbility::ExecuteAbilityLogic(const FGameplayAbilitySpecHandl
 	// Super::ExecuteAbilityLogic(TargetedActor);
 	if (CommitAbility(Handle, ActorInfo, ActivationInfo))
 	{
-		
 		ApplyGameplayEffectToTarget(Handle, ActorInfo, ActivationInfo, TargetDataHandle, DamageEffect, 1);
-		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
-	}
-	else
-	{
-		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+		if (GetAbilitySystemFromActorInfo())
+		{
+			FGameplayCueParameters CueParams;
+			CueParams.SourceObject = GetAvatarActorFromActorInfo();
+
+			// Récupérer la target depuis le TargetDataHandle
+			if (TargetDataHandle.IsValid(0))
+			{
+				const FGameplayAbilityTargetData* Data = TargetDataHandle.Get(0);
+				if (Data)
+				{
+					TArray<TWeakObjectPtr<AActor>> TargetActors = Data->GetActors();
+					if (TargetActors.Num() > 0 && TargetActors[0].IsValid())
+					{
+						AActor* TargetActor = TargetActors[0].Get();
+						CueParams.TargetAttachComponent = TargetActor->GetRootComponent();
+						CueParams.Location = TargetActor->GetActorLocation();
+						CueParams.SourceObject = FXTest;
+					}
+				}
+			}
+			GetAbilitySystemFromActorInfo()->ExecuteGameplayCue(GameplayCueTag, CueParams);
+			EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
+		}
+		else
+		{
+			EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+		}
 	}
 }
 
