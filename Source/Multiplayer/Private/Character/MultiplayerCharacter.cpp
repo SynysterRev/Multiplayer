@@ -14,14 +14,17 @@
 #include "InputActionValue.h"
 #include "Multiplayer.h"
 #include "AbilitySystem/MultiplayerAbilitySystemComponent.h"
+#include "AbilitySystem/MultiplayerAttributeSet.h"
 #include "Character/Components/TargetingComponent.h"
+#include "Components/WidgetComponent.h"
 #include "Player/MultiplayerPlayerState.h"
+#include "UI/HealthBarWidget.h"
 
 AMultiplayerCharacter::AMultiplayerCharacter()
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-		
+
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -50,8 +53,11 @@ AMultiplayerCharacter::AMultiplayerCharacter()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
-	
-	TargetingComponent= CreateDefaultSubobject<UTargetingComponent>(TEXT("TargetingComponent"));
+
+	TargetingComponent = CreateDefaultSubobject<UTargetingComponent>(TEXT("TargetingComponent"));
+
+	WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComponent"));
+	WidgetComponent->SetupAttachment(RootComponent);
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
@@ -75,35 +81,41 @@ void AMultiplayerCharacter::InitializeAbilitySystemComponent()
 	{
 		UAbilitySystemComponent* ASC = MultiplayerPlayerState->GetAbilitySystemComponent();
 		check(ASC);
-		
+
 		ASC->InitAbilityActorInfo(MultiplayerPlayerState, this);
 		AbilitySystemComponent = ASC;
 		AttributesSet = MultiplayerPlayerState->GetAttributeSet();
-		
-		
+
 		Cast<UMultiplayerAbilitySystemComponent>(AbilitySystemComponent)->InitializeAbilities(StartingAbilities);
+
+		Cast<UHealthBarWidget>(WidgetComponent->GetUserWidgetObject())->SetAttributeSet(
+			Cast<UMultiplayerAttributeSet>(AttributesSet));
 	}
 }
 
 void AMultiplayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	// Set up action bindings
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
-		
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
+	{
 		// Jumping
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMultiplayerCharacter::Move);
-		EnhancedInputComponent->BindAction(MouseLookAction, ETriggerEvent::Triggered, this, &AMultiplayerCharacter::Look);
+		EnhancedInputComponent->BindAction(MouseLookAction, ETriggerEvent::Triggered, this,
+		                                   &AMultiplayerCharacter::Look);
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMultiplayerCharacter::Look);
 	}
 	else
 	{
-		UE_LOG(LogMultiplayer, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
+		UE_LOG(LogMultiplayer, Error,
+		       TEXT(
+			       "'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."
+		       ), *GetNameSafe(this));
 	}
 }
 

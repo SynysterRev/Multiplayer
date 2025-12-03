@@ -7,7 +7,7 @@
 #include "AbilitySystemComponent.h"
 #include "MultiplayerAttributeSet.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FAttributeChangedEvent, UAttributeSet*, AttributeSet, float, OldValue, float, NewValue);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FAttributeChangedEvent, UMultiplayerAttributeSet*, AttributeSet, float, OldValue, float, NewValue);
 
 UCLASS()
 class MULTIPLAYER_API UMultiplayerAttributeSet : public UAttributeSet
@@ -17,17 +17,18 @@ class MULTIPLAYER_API UMultiplayerAttributeSet : public UAttributeSet
 public:
 
 	UMultiplayerAttributeSet();
+	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const override;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, ReplicatedUsing=OnRep_Health)
 	FGameplayAttributeData Health;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, ReplicatedUsing=OnRep_MaxHealth)
 	FGameplayAttributeData MaxHealth;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, ReplicatedUsing=OnRep_Mana)
 	FGameplayAttributeData Mana;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, ReplicatedUsing=OnRep_MaxMana)
 	FGameplayAttributeData MaxMana;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
@@ -42,13 +43,25 @@ public:
 	void OnRep_Health(const FGameplayAttributeData& OldValue);
 	
 	UFUNCTION()
+	void OnRep_MaxHealth(const FGameplayAttributeData& OldValue);
+	
+	UFUNCTION()
 	void OnRep_Mana(const FGameplayAttributeData& OldValue);
+	
+	UFUNCTION()
+	void OnRep_MaxMana(const FGameplayAttributeData& OldValue);
 	
 	UPROPERTY(BlueprintAssignable)
 	FAttributeChangedEvent OnHealthChanged;
 	
 	UPROPERTY(BlueprintAssignable)
+	FAttributeChangedEvent OnMaxHealthChanged;
+	
+	UPROPERTY(BlueprintAssignable)
 	FAttributeChangedEvent OnManaChanged;
+	
+	UPROPERTY(BlueprintAssignable)
+	FAttributeChangedEvent OnMaxManaChanged;
 
 	ATTRIBUTE_ACCESSORS_BASIC(UMultiplayerAttributeSet, Health);
 	ATTRIBUTE_ACCESSORS_BASIC(UMultiplayerAttributeSet, MaxHealth);

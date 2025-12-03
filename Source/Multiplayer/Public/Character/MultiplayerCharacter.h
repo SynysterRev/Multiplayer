@@ -7,6 +7,7 @@
 #include "Logging/LogMacros.h"
 #include "MultiplayerCharacter.generated.h"
 
+class UWidgetComponent;
 class UAbilityInfo;
 class UTargetingComponent;
 class USpringArmComponent;
@@ -37,6 +38,9 @@ class AMultiplayerCharacter : public AMultiplayerCharacterBase
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UTargetingComponent> TargetingComponent;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UWidgetComponent> WidgetComponent;
 	
 protected:
 

@@ -56,6 +56,14 @@ void UMultiplayerAttributeSet::OnRep_Health(const FGameplayAttributeData& OldVal
 	OnHealthChanged.Broadcast(this, OldHealth, NewHealth);
 }
 
+void UMultiplayerAttributeSet::OnRep_MaxHealth(const FGameplayAttributeData& OldValue)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UMultiplayerAttributeSet, MaxHealth, OldValue);
+	const float OldMaxHealth = OldValue.GetCurrentValue();
+	const float NewMaxHealth = GetMaxHealth();
+	OnHealthChanged.Broadcast(this, OldMaxHealth, NewMaxHealth);
+}
+
 void UMultiplayerAttributeSet::OnRep_Mana(const FGameplayAttributeData& OldValue)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UMultiplayerAttributeSet, Mana, OldValue);
@@ -64,11 +72,19 @@ void UMultiplayerAttributeSet::OnRep_Mana(const FGameplayAttributeData& OldValue
 	OnManaChanged.Broadcast(this, OldMana, NewMana);
 }
 
+void UMultiplayerAttributeSet::OnRep_MaxMana(const FGameplayAttributeData& OldValue)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UMultiplayerAttributeSet, MaxMana, OldValue);
+	const float OldMaxMana = OldValue.GetCurrentValue();
+	const float NewMaxMana = GetMaxHealth();
+	OnHealthChanged.Broadcast(this, OldMaxMana, NewMaxMana);
+}
+
 void UMultiplayerAttributeSet::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(UMultiplayerAttributeSet, Health);
-	DOREPLIFETIME(UMultiplayerAttributeSet, MaxHealth);
-	DOREPLIFETIME(UMultiplayerAttributeSet, Mana);
-	DOREPLIFETIME(UMultiplayerAttributeSet, MaxMana);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMultiplayerAttributeSet, Health, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMultiplayerAttributeSet, MaxHealth, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMultiplayerAttributeSet, Mana, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMultiplayerAttributeSet, MaxMana, COND_None, REPNOTIFY_Always);
 }
