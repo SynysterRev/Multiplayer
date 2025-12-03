@@ -3,10 +3,12 @@
 
 #include "UI/Target/TargetInfoWidget.h"
 
-#include "MultiplayerPlayerController.h"
-#include "Characters/MultiplayerCharacter.h"
-#include "Characters/Components/TargetingComponent.h"
+#include "Character/MultiplayerCharacter.h"
+#include "Character/Components/TargetingComponent.h"
 #include "Components/ProgressBar.h"
+#include "Player/MultiplayerPlayerController.h"
+
+class AMultiplayerPlayerController;
 
 void UTargetInfoWidget::NativeConstruct()
 {
