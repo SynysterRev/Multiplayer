@@ -6,6 +6,10 @@
 #include "GameFramework/HUD.h"
 #include "MultiplayerHUD.generated.h"
 
+class UAttributeSet;
+class UAbilitySystemComponent;
+class UGameRootUIWidgetController;
+struct FWidgetControllerParams;
 class UMultiplayerCommonWidget;
 /**
  * 
@@ -14,18 +18,22 @@ UCLASS()
 class MULTIPLAYER_API AMultiplayerHUD : public AHUD
 {
 	GENERATED_BODY()
-	
+
 public:
-	
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<UMultiplayerCommonWidget> RootGameUIPanel;
-	
-protected:
-	
-	virtual void BeginPlay() override;
-	
+
+	UGameRootUIWidgetController* GetRootUIWidgetController(const FWidgetControllerParams& Params);
+	void InitRootUI(APlayerController* InPC, UAbilitySystemComponent* InASC, APlayerState* InPS,
+	                UAttributeSet* InAS);
+
 private:
-	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UMultiplayerCommonWidget> RootGameUIWidgetClass;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UGameRootUIWidgetController> RootUIWidgetControllerClass;
+
+	UPROPERTY()
+	TObjectPtr<UGameRootUIWidgetController> RootUIWidgetController;
 };

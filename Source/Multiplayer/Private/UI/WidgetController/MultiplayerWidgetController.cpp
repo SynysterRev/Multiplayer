@@ -3,3 +3,10 @@
 
 #include "UI/WidgetController/MultiplayerWidgetController.h"
 
+void UMultiplayerWidgetController::SetWidgetControllerParams(const FWidgetControllerParams& Params)
+{
+	PlayerController = Params.PlayerController;
+	PlayerState = Params.PlayerState;
+	AbilitySystemComponent = Params.AbilitySystemComponent;
+	AttributeSet = Params.AttributeSet;
+}

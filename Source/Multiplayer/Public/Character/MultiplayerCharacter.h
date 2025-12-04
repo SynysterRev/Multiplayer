@@ -70,7 +70,8 @@ public:
 	
 private:
 
-	void InitializeAbilitySystemComponent();
+	void InitAbilityActorInfo();
+	void InitHUD() const;
 
 protected:
 

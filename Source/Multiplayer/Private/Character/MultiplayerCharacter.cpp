@@ -17,8 +17,10 @@
 #include "AbilitySystem/MultiplayerAttributeSet.h"
 #include "Character/Components/TargetingComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Player/MultiplayerPlayerController.h"
 #include "Player/MultiplayerPlayerState.h"
 #include "UI/HealthBarWidget.h"
+#include "UI/HUD/MultiplayerHUD.h"
 
 AMultiplayerCharacter::AMultiplayerCharacter()
 {
@@ -66,30 +68,46 @@ AMultiplayerCharacter::AMultiplayerCharacter()
 void AMultiplayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
-	InitializeAbilitySystemComponent();
+	InitAbilityActorInfo();
+	InitHUD();
 }
 
 void AMultiplayerCharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
-	InitializeAbilitySystemComponent();
+	InitAbilityActorInfo();
+	InitHUD();
 }
 
-void AMultiplayerCharacter::InitializeAbilitySystemComponent()
+void AMultiplayerCharacter::InitAbilityActorInfo()
 {
-	if (AMultiplayerPlayerState* MultiplayerPlayerState = GetPlayerState<AMultiplayerPlayerState>())
+	AMultiplayerPlayerState* MultiplayerPlayerState = GetPlayerState<AMultiplayerPlayerState>();
+	check(MultiplayerPlayerState);
+	UMultiplayerAbilitySystemComponent* ASC = Cast<UMultiplayerAbilitySystemComponent>(
+		MultiplayerPlayerState->GetAbilitySystemComponent());
+	check(ASC);
+
+	ASC->InitAbilityActorInfo(MultiplayerPlayerState, this);
+	AbilitySystemComponent = ASC;
+	AttributesSet = MultiplayerPlayerState->GetAttributeSet();
+
+	ASC->InitializeAbilities(StartingAbilities);
+
+	// to change
+	Cast<UHealthBarWidget>(WidgetComponent->GetUserWidgetObject())->SetAttributeSet(
+		Cast<UMultiplayerAttributeSet>(AttributesSet));
+}
+
+void AMultiplayerCharacter::InitHUD() const
+{
+	if (AMultiplayerPlayerController* PlayerController = Cast<AMultiplayerPlayerController>(GetController()))
 	{
-		UAbilitySystemComponent* ASC = MultiplayerPlayerState->GetAbilitySystemComponent();
-		check(ASC);
-
-		ASC->InitAbilityActorInfo(MultiplayerPlayerState, this);
-		AbilitySystemComponent = ASC;
-		AttributesSet = MultiplayerPlayerState->GetAttributeSet();
-
-		Cast<UMultiplayerAbilitySystemComponent>(AbilitySystemComponent)->InitializeAbilities(StartingAbilities);
-
-		Cast<UHealthBarWidget>(WidgetComponent->GetUserWidgetObject())->SetAttributeSet(
-			Cast<UMultiplayerAttributeSet>(AttributesSet));
+		AMultiplayerPlayerState* MultiplayerPlayerState = GetPlayerState<AMultiplayerPlayerState>();
+		check(MultiplayerPlayerState);
+		if (AMultiplayerHUD* MultiHUD = Cast<AMultiplayerHUD>(PlayerController->GetHUD()))
+		{
+			MultiHUD->InitRootUI(PlayerController, AbilitySystemComponent, MultiplayerPlayerState, AttributesSet);
+		}
 	}
 }
 
