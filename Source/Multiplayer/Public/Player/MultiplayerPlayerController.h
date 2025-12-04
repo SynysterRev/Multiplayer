@@ -69,12 +69,6 @@ protected:
 	UPROPERTY(Transient)
 	TObjectPtr<AMultiplayerCharacter> MultiplayerCharacter;
 	
-	UPROPERTY(EditAnywhere, Category="UI")
-	TSubclassOf<URootGameUIPanel> RootGameUIPanelClass;
-	
-	UPROPERTY(Transient, BlueprintReadOnly, Category="UI")
-	TObjectPtr<URootGameUIPanel> RootGameUIPanel;
-	
 	/** Gameplay initialization */
 	virtual void BeginPlay() override;
 

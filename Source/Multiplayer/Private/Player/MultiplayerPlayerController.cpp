@@ -54,25 +54,6 @@ void AMultiplayerPlayerController::BeginPlay()
 	}
 
 	bShowMouseCursor = true;
-
-	if (IsLocalPlayerController())
-	{
-		if (RootGameUIPanelClass)
-		{
-			RootGameUIPanel = Cast<URootGameUIPanel>(CreateWidget(this, RootGameUIPanelClass));
-
-			if (!RootGameUIPanel)
-			{
-				UE_LOG(LogMultiplayerPlayerController, Warning, TEXT("Failed to create RootGameUIPanel"));
-				return;
-			}
-			RootGameUIPanel->AddToViewport();
-		}
-		else
-		{
-			UE_LOG(LogMultiplayerPlayerController, Warning, TEXT("No root UI class set in the controller"));
-		}
-	}
 }
 
 void AMultiplayerPlayerController::SetupInputComponent()

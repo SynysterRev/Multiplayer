@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CommonUserWidget.h"
+#include "Widget/MultiplayerCommonWidget.h"
 #include "RootGameUIPanel.generated.h"
 
 class UTargetInfoWidget;
@@ -11,7 +11,7 @@ class UTargetInfoWidget;
  * 
  */
 UCLASS()
-class MULTIPLAYER_API URootGameUIPanel : public UCommonUserWidget
+class MULTIPLAYER_API URootGameUIPanel : public UMultiplayerCommonWidget
 {
 	GENERATED_BODY()
 	
