@@ -27,6 +27,7 @@ void UTargetInfoWidget::NativeConstruct()
 		}
 		TargetingComponent->OnTargetChanged.AddDynamic(this, &UTargetInfoWidget::UpdateTarget);
 	}
+	SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void UTargetInfoWidget::UpdateTarget(AActor* NewTarget)
@@ -34,7 +35,12 @@ void UTargetInfoWidget::UpdateTarget(AActor* NewTarget)
 	if (!NewTarget)
 	{
 		//remove widget
+		SetVisibility(ESlateVisibility::Collapsed);
 		return;
+	}
+	else if (GetVisibility() == ESlateVisibility::Collapsed)
+	{
+		SetVisibility(ESlateVisibility::Visible);
 	}
 	UpdateTargetName(FText::FromString(NewTarget->GetName()));
 }

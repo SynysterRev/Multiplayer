@@ -75,6 +75,7 @@ private:
 
 protected:
 
+	virtual void BeginPlay() override;
 	/** Initialize input action bindings */
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 

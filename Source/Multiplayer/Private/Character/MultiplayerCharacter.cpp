@@ -111,6 +111,16 @@ void AMultiplayerCharacter::InitHUD() const
 	}
 }
 
+void AMultiplayerCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	if (IsLocallyControlled())
+	{
+		WidgetComponent->SetVisibility(false);
+	}
+}
+
 void AMultiplayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	// Set up action bindings

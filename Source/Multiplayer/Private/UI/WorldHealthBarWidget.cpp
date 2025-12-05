@@ -22,7 +22,8 @@ void UWorldHealthBarWidget::UpdateHealthBar(const UMultiplayerAttributeSet* Attr
 {
 	if (HealthBar)
 	{
-		HealthBar->SetPercent(AttributeSet->GetHealth() / AttributeSet->GetMaxHealth());
+		float percent = AttributeSet->GetMaxHealth() > 0.f ? AttributeSet->GetHealth() / AttributeSet->GetMaxHealth() : 0.f;
+		HealthBar->SetPercent(percent);
 	}
 	if (HealthBarText)
 	{
