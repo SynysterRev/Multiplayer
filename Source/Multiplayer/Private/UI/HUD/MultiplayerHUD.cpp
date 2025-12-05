@@ -18,7 +18,7 @@ UGameRootUIWidgetController* AMultiplayerHUD::GetRootUIWidgetController(const FW
 }
 
 void AMultiplayerHUD::InitRootUI(APlayerController* InPC, UAbilitySystemComponent* InASC, APlayerState* InPS,
-                                 UAttributeSet* InAS)
+                                 UMultiplayerAttributeSet* InAS)
 {
 	if (RootGameUIWidgetClass)
 	{
@@ -38,5 +38,6 @@ void AMultiplayerHUD::InitRootUI(APlayerController* InPC, UAbilitySystemComponen
 	if (UMultiplayerWidgetController* WidgetController = GetRootUIWidgetController(WidgetControllerParams))
 	{
 		RootGameUIPanel->SetWidgetController(WidgetController);
+		WidgetController->BroadcastInitialValues();
 	}
 }

@@ -19,7 +19,7 @@
 #include "Components/WidgetComponent.h"
 #include "Player/MultiplayerPlayerController.h"
 #include "Player/MultiplayerPlayerState.h"
-#include "UI/HealthBarWidget.h"
+#include "UI/WorldHealthBarWidget.h"
 #include "UI/HUD/MultiplayerHUD.h"
 
 AMultiplayerCharacter::AMultiplayerCharacter()
@@ -89,13 +89,9 @@ void AMultiplayerCharacter::InitAbilityActorInfo()
 
 	ASC->InitAbilityActorInfo(MultiplayerPlayerState, this);
 	AbilitySystemComponent = ASC;
-	AttributesSet = MultiplayerPlayerState->GetAttributeSet();
+	AttributesSet = Cast<UMultiplayerAttributeSet>(MultiplayerPlayerState->GetAttributeSet());
 
 	ASC->InitializeAbilities(StartingAbilities);
-
-	// to change
-	Cast<UHealthBarWidget>(WidgetComponent->GetUserWidgetObject())->SetAttributeSet(
-		Cast<UMultiplayerAttributeSet>(AttributesSet));
 }
 
 void AMultiplayerCharacter::InitHUD() const
@@ -108,6 +104,10 @@ void AMultiplayerCharacter::InitHUD() const
 		{
 			MultiHUD->InitRootUI(PlayerController, AbilitySystemComponent, MultiplayerPlayerState, AttributesSet);
 		}
+	}
+	if (UWorldHealthBarWidget* HealthBarWidget = Cast<UWorldHealthBarWidget>(WidgetComponent->GetUserWidgetObject()))
+	{
+		HealthBarWidget->InitHealthBarWidget(Cast<UMultiplayerAttributeSet>(AttributesSet));
 	}
 }
 

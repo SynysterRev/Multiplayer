@@ -6,6 +6,7 @@
 #include "Widget/MultiplayerCommonWidget.h"
 #include "RootGameUIPanel.generated.h"
 
+class UResourceBarWidget;
 class UTargetInfoWidget;
 /**
  * 
@@ -20,4 +21,8 @@ protected:
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTargetInfoWidget> TargetInfoWidget;
 	
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UResourceBarWidget> HealthBarWidget;
+
+	virtual void WidgetControllerSet_Implementation() override;
 };

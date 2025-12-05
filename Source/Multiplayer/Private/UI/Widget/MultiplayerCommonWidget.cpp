@@ -8,3 +8,7 @@ void UMultiplayerCommonWidget::SetWidgetController(UObject* InWidgetController)
 	WidgetController = InWidgetController;
 	WidgetControllerSet();
 }
+
+void UMultiplayerCommonWidget::WidgetControllerSet_Implementation()
+{
+}

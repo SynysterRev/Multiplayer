@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CommonUserWidget.h"
 #include "CommonTextBlock.h"
+#include "UI/Widget/MultiplayerCommonWidget.h"
 #include "TargetInfoWidget.generated.h"
 
 class UProgressBar;
@@ -12,7 +12,7 @@ class UProgressBar;
  * 
  */
 UCLASS()
-class MULTIPLAYER_API UTargetInfoWidget : public UCommonUserWidget
+class MULTIPLAYER_API UTargetInfoWidget : public UMultiplayerCommonWidget
 {
 	GENERATED_BODY()
 	

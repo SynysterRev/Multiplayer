@@ -10,3 +10,7 @@ void UMultiplayerWidgetController::SetWidgetControllerParams(const FWidgetContro
 	AbilitySystemComponent = Params.AbilitySystemComponent;
 	AttributeSet = Params.AttributeSet;
 }
+
+void UMultiplayerWidgetController::BroadcastInitialValues()
+{
+}

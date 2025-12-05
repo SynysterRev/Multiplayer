@@ -24,6 +24,15 @@ protected:
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> ResourceText;
 	
-	void UpdateResourceText(float CurrentValue, float MaxValue);
-	void UpdateResourceBar(float InPercent);	
+	UPROPERTY(BlueprintReadWrite)
+	float CurrentResource;
+	
+	UPROPERTY(BlueprintReadWrite)
+	float MaxResource;
+	
+	UFUNCTION(BlueprintCallable)
+	void UpdateResourceText(float CurrentValue);
+	
+	UFUNCTION(BlueprintCallable)
+	void UpdateResourceBar(float InPercent);
 };

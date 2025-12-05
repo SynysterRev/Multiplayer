@@ -8,7 +8,7 @@
 #include "MultiplayerCharacterBase.generated.h"
 
 class UAbilitySystemComponent;
-class UAttributeSet;
+class UMultiplayerAttributeSet;
 class UAbilityInfo;
 
 UCLASS(Abstract)
@@ -20,7 +20,7 @@ public:
 	AMultiplayerCharacterBase();
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-	virtual UAttributeSet* GetAttributeSet() const { return AttributesSet; }
+	virtual UMultiplayerAttributeSet* GetAttributeSet() const { return AttributesSet; }
 
 protected:
 
@@ -31,5 +31,5 @@ protected:
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
 	UPROPERTY(BlueprintReadOnly, Category="Attributes")
-	TObjectPtr<UAttributeSet> AttributesSet;
+	TObjectPtr<UMultiplayerAttributeSet> AttributesSet;
 };

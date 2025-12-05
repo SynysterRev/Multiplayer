@@ -6,7 +6,7 @@
 #include "GameFramework/HUD.h"
 #include "MultiplayerHUD.generated.h"
 
-class UAttributeSet;
+class UMultiplayerAttributeSet;
 class UAbilitySystemComponent;
 class UGameRootUIWidgetController;
 struct FWidgetControllerParams;
@@ -25,7 +25,7 @@ public:
 
 	UGameRootUIWidgetController* GetRootUIWidgetController(const FWidgetControllerParams& Params);
 	void InitRootUI(APlayerController* InPC, UAbilitySystemComponent* InASC, APlayerState* InPS,
-	                UAttributeSet* InAS);
+	                UMultiplayerAttributeSet* InAS);
 
 private:
 	UPROPERTY(EditAnywhere)

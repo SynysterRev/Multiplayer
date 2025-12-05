@@ -6,6 +6,7 @@
 #include "UObject/NoExportTypes.h"
 #include "MultiplayerWidgetController.generated.h"
 
+class UMultiplayerAttributeSet;
 class UAttributeSet;
 class UAbilitySystemComponent;
 
@@ -19,7 +20,7 @@ struct FWidgetControllerParams
 	}
 
 	FWidgetControllerParams(APlayerController* InPC, UAbilitySystemComponent* InASC, APlayerState* InPS,
-	                        UAttributeSet* InAS) : PlayerController(InPC), AbilitySystemComponent(InASC),
+	                        UMultiplayerAttributeSet* InAS) : PlayerController(InPC), AbilitySystemComponent(InASC),
 	                                               PlayerState(InPS), AttributeSet(InAS)
 	{
 	}
@@ -34,7 +35,7 @@ struct FWidgetControllerParams
 	TObjectPtr<APlayerState> PlayerState = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="WidgetController")
-	TObjectPtr<UAttributeSet> AttributeSet = nullptr;
+	TObjectPtr<UMultiplayerAttributeSet> AttributeSet = nullptr;
 };
 
 
@@ -46,6 +47,8 @@ class MULTIPLAYER_API UMultiplayerWidgetController : public UObject
 public:
 	UFUNCTION(BlueprintCallable)
 	void SetWidgetControllerParams(const FWidgetControllerParams& Params);
+	
+	virtual void BroadcastInitialValues();
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category="WidgetController")
@@ -58,5 +61,5 @@ protected:
 	TObjectPtr<APlayerState> PlayerState;
 
 	UPROPERTY(BlueprintReadOnly, Category="WidgetController")
-	TObjectPtr<UAttributeSet> AttributeSet;
+	TObjectPtr<UMultiplayerAttributeSet> AttributeSet;
 };

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "HealthBarWidget.generated.h"
+#include "WorldHealthBarWidget.generated.h"
 
 class UMultiplayerAttributeSet;
 class UTextBlock;
@@ -13,13 +13,13 @@ class UProgressBar;
  * 
  */
 UCLASS()
-class MULTIPLAYER_API UHealthBarWidget : public UUserWidget
+class MULTIPLAYER_API UWorldHealthBarWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
 public:
 	
-	void SetAttributeSet(UMultiplayerAttributeSet* AttributeSet);
+	void InitHealthBarWidget(UMultiplayerAttributeSet* AttributeSet);
 	
 protected:
 	
@@ -31,4 +31,6 @@ protected:
 	
 	UFUNCTION()
 	void OnHealthChanged(UMultiplayerAttributeSet* AttributeSet, float OldValue, float NewValue);
+	
+	void UpdateHealthBar(const UMultiplayerAttributeSet* AttributeSet) const;
 };

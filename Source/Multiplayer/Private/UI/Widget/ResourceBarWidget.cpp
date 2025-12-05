@@ -6,11 +6,11 @@
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 
-void UResourceBarWidget::UpdateResourceText(float CurrentValue, float MaxValue)
+void UResourceBarWidget::UpdateResourceText(float CurrentValue)
 {
 	if (ResourceText)
 	{
-		ResourceText->SetText(FText::FromString(FString::Printf(TEXT("%f / %f"), CurrentValue, MaxValue)));
+		ResourceText->SetText(FText::FromString(FString::Printf(TEXT("%d"), FMath::TruncToInt(CurrentValue))));
 	}
 }
 
